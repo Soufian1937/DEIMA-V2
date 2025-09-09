@@ -30,6 +30,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
     { id: 'emails', label: 'Traitement Mailing', icon: Mail },
     { id: 'reunions-manager', label: 'Sujets Manager', icon: Calendar },
     { id: 'reunions-equipe', label: 'Stand-up Équipe', icon: Users },
+    { id: 'objectifs', label: 'Objectifs Individuels', icon: Settings },
     { id: 'rapports', label: 'Rapports', icon: BarChart3 },
     { id: 'equipe', label: 'Gestion Équipe', icon: Users },
   ];

@@ -52,3 +52,20 @@ export interface Rapport {
   type: 'Actions' | 'Équipe' | 'Réunions';
   donnees: any;
 }
+
+export interface ObjectifIndividuel {
+  id: string;
+  titre: string;
+  description: string;
+  membreId: string;
+  membreNom: string;
+  dateCreation: string;
+  dateEcheance: string;
+  statut: 'Non commencé' | 'En cours' | 'Terminé' | 'En retard';
+  priorite: 'Haute' | 'Moyenne' | 'Basse';
+  progression: number;
+  type: 'Stratégique' | 'Opérationnel' | 'Développement';
+  trimestre: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+  notes: string;
+  jalons: string[];
+}

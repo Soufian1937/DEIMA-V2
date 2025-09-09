@@ -9,6 +9,7 @@ import ReunionsManager from './components/ReunionsManager';
 import ReunionsEquipe from './components/ReunionsEquipe';
 import Rapports from './components/Rapports';
 import GestionEquipe from './components/GestionEquipe';
+import ObjectifsIndividuels from './components/ObjectifsIndividuels';
 import { ExcelExportService } from './services/ExcelExportService';
 
 function App() {
@@ -57,6 +58,8 @@ function App() {
         return <ReunionsManager />;
       case 'reunions-equipe':
         return <ReunionsEquipe />;
+      case 'objectifs':
+        return <ObjectifsIndividuels />;
       case 'rapports':
         return <Rapports />;
       case 'equipe':

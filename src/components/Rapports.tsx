@@ -223,6 +223,110 @@ const Rapports: React.FC = () => {
       alert('Erreur lors de la génération du rapport Excel.');
     }
   };
+
+  const handleGenerateActionsReport = () => {
+    try {
+      const doc = new jsPDF();
+      
+      doc.setFontSize(20);
+      doc.text('Rapport Actions Détaillé', 20, 20);
+      
+      doc.setFontSize(12);
+      doc.text(`Période: ${getPeriodLabel()}`, 20, 35);
+      doc.text(`Généré le: ${new Date().toLocaleDateString('fr-FR')}`, 20, 45);
+      
+      const actionsData = [
+        ['Statut', 'Nombre', 'Pourcentage'],
+        ['Terminées', rapportData.actions.terminees.toString(), `${Math.round((rapportData.actions.terminees / rapportData.actions.total) * 100)}%`],
+        ['En cours', rapportData.actions.enCours.toString(), `${Math.round((rapportData.actions.enCours / rapportData.actions.total) * 100)}%`],
+        ['En retard', rapportData.actions.enRetard.toString(), `${Math.round((rapportData.actions.enRetard / rapportData.actions.total) * 100)}%`]
+      ];
+      
+      (doc as any).autoTable({
+        head: [actionsData[0]],
+        body: actionsData.slice(1),
+        startY: 60,
+        margin: { left: 20 },
+        theme: 'striped'
+      });
+      
+      doc.save(`Rapport_Actions_${new Date().toISOString().split('T')[0]}.pdf`);
+      alert('Rapport Actions généré avec succès !');
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Erreur lors de la génération du rapport Actions.');
+    }
+  };
+
+  const handleGenerateEquipeReport = () => {
+    try {
+      const doc = new jsPDF();
+      
+      doc.setFontSize(20);
+      doc.text('Rapport Équipe Détaillé', 20, 20);
+      
+      doc.setFontSize(12);
+      doc.text(`Période: ${getPeriodLabel()}`, 20, 35);
+      doc.text(`Généré le: ${new Date().toLocaleDateString('fr-FR')}`, 20, 45);
+      
+      const equipeData = [
+        ['Métrique', 'Valeur'],
+        ['Nombre de membres', rapportData.equipe.membres.toString()],
+        ['Actions par membre', rapportData.equipe.actionsParMembre.toString()],
+        ['Taux de complétion', `${rapportData.equipe.tauxCompletion}%`],
+        ['Performance globale', `${rapportData.equipe.performance}%`]
+      ];
+      
+      (doc as any).autoTable({
+        head: [equipeData[0]],
+        body: equipeData.slice(1),
+        startY: 60,
+        margin: { left: 20 },
+        theme: 'striped'
+      });
+      
+      doc.save(`Rapport_Equipe_${new Date().toISOString().split('T')[0]}.pdf`);
+      alert('Rapport Équipe généré avec succès !');
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Erreur lors de la génération du rapport Équipe.');
+    }
+  };
+
+  const handleGenerateReunionsReport = () => {
+    try {
+      const doc = new jsPDF();
+      
+      doc.setFontSize(20);
+      doc.text('Rapport Réunions Détaillé', 20, 20);
+      
+      doc.setFontSize(12);
+      doc.text(`Période: ${getPeriodLabel()}`, 20, 35);
+      doc.text(`Généré le: ${new Date().toLocaleDateString('fr-FR')}`, 20, 45);
+      
+      const reunionsData = [
+        ['Statut', 'Nombre'],
+        ['Total sujets', rapportData.reunions.totalSujets.toString()],
+        ['Sujets ouverts', rapportData.reunions.sujetsOuverts.toString()],
+        ['Sujets en cours', rapportData.reunions.sujetsEnCours.toString()],
+        ['Sujets fermés', rapportData.reunions.sujetsFermes.toString()]
+      ];
+      
+      (doc as any).autoTable({
+        head: [reunionsData[0]],
+        body: reunionsData.slice(1),
+        startY: 60,
+        margin: { left: 20 },
+        theme: 'striped'
+      });
+      
+      doc.save(`Rapport_Reunions_${new Date().toISOString().split('T')[0]}.pdf`);
+      alert('Rapport Réunions généré avec succès !');
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Erreur lors de la génération du rapport Réunions.');
+    }
+  };
   
   const getPeriodLabel = () => {
     switch (selectedPeriod) {
@@ -452,7 +556,10 @@ const Rapports: React.FC = () => {
                   <p className="text-sm text-gray-600">Détail complet des actions</p>
                 </div>
               </div>
-              <button className="w-full bg-blue-50 text-blue-700 py-2 px-4 rounded-lg hover:bg-blue-100 transition-colors">
+              <button 
+                onClick={handleGenerateActionsReport}
+                className="w-full bg-blue-50 text-blue-700 py-2 px-4 rounded-lg hover:bg-blue-100 transition-colors"
+              >
                 Générer
               </button>
             </div>
@@ -465,7 +572,10 @@ const Rapports: React.FC = () => {
                   <p className="text-sm text-gray-600">Performance par membre</p>
                 </div>
               </div>
-              <button className="w-full bg-green-50 text-green-700 py-2 px-4 rounded-lg hover:bg-green-100 transition-colors">
+              <button 
+                onClick={handleGenerateEquipeReport}
+                className="w-full bg-green-50 text-green-700 py-2 px-4 rounded-lg hover:bg-green-100 transition-colors"
+              >
                 Générer
               </button>
             </div>
@@ -478,7 +588,10 @@ const Rapports: React.FC = () => {
                   <p className="text-sm text-gray-600">Suivi des sujets</p>
                 </div>
               </div>
-              <button className="w-full bg-purple-50 text-purple-700 py-2 px-4 rounded-lg hover:bg-purple-100 transition-colors">
+              <button 
+                onClick={handleGenerateReunionsReport}
+                className="w-full bg-purple-50 text-purple-700 py-2 px-4 rounded-lg hover:bg-purple-100 transition-colors"
+              >
                 Générer
               </button>
             </div>

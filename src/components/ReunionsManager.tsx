@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { SujetReunion } from '../types';
 import ConfigurationSection from './ConfigurationSection';
+import SujetReunionModal from './SujetReunionModal';
 
 const ReunionsManager: React.FC = () => {
   const [sujets, setSujets] = useState<SujetReunion[]>([
@@ -54,6 +55,7 @@ const ReunionsManager: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatut, setFilterStatut] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [editingSujet, setEditingSujet] = useState<SujetReunion | null>(null);
 
   const getStatutIcon = (statut: string) => {
     switch (statut) {
@@ -87,7 +89,39 @@ const ReunionsManager: React.FC = () => {
   const handleDeleteSujet = (id: string) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce sujet ?')) {
       setSujets(sujets.filter(sujet => sujet.id !== id));
+      alert('Sujet supprimé avec succès !');
     }
+  };
+
+  const handleEditSujet = (sujet: SujetReunion) => {
+    setEditingSujet(sujet);
+    setShowModal(true);
+  };
+
+  const handleSaveSujet = (sujetData: Omit<SujetReunion, 'id'>) => {
+    if (editingSujet) {
+      // Modifier sujet existant
+      setSujets(sujets.map(sujet => 
+        sujet.id === editingSujet.id 
+          ? { ...sujetData, id: editingSujet.id }
+          : sujet
+      ));
+      alert('Sujet modifié avec succès !');
+    } else {
+      // Créer nouveau sujet
+      const newSujet: SujetReunion = {
+        ...sujetData,
+        id: Date.now().toString()
+      };
+      setSujets([...sujets, newSujet]);
+      alert('Sujet créé avec succès !');
+    }
+    setEditingSujet(null);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setEditingSujet(null);
   };
 
   return (
@@ -229,7 +263,10 @@ const ReunionsManager: React.FC = () => {
                 </div>
 
                 <div className="flex items-center space-x-2 ml-4">
-                  <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                  <button 
+                    onClick={() => handleEditSujet(sujet)}
+                    className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  >
                     <Edit size={16} />
                   </button>
                   <button
@@ -254,6 +291,15 @@ const ReunionsManager: React.FC = () => {
           </p>
         </div>
       )}
+
+      {/* Modal */}
+      <SujetReunionModal
+        isOpen={showModal}
+        onClose={handleCloseModal}
+        onSave={handleSaveSujet}
+        sujet={editingSujet}
+        type="Manager"
+      />
     </div>
   );
 };

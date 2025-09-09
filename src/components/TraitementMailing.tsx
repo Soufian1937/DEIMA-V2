@@ -12,6 +12,7 @@ import {
 import { Email } from '../types';
 import ConfigurationSection from './ConfigurationSection';
 import ExportButtons from './ExportButtons';
+import EmailModal from './EmailModal';
 
 const TraitementMailing: React.FC = () => {
   const [emails, setEmails] = useState<Email[]>([
@@ -50,6 +51,7 @@ const TraitementMailing: React.FC = () => {
   const [filterTraite, setFilterTraite] = useState('');
   const [showComposeModal, setShowComposeModal] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
+  const [showReplyModal, setShowReplyModal] = useState(false);
 
   const filteredEmails = emails.filter(email => {
     const matchesSearch = email.sujet.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -67,8 +69,44 @@ const TraitementMailing: React.FC = () => {
   };
 
   const handleCreateAction = (email: Email) => {
-    // Logic to create action from email
-    console.log('Creating action from email:', email);
+    const actionTitle = `Action: ${email.sujet}`;
+    const actionDescription = `Action créée depuis l'email de ${email.expediteur}:\n\n${email.contenu}`;
+    
+    // Simuler la création d'une action
+    alert(`Action créée: "${actionTitle}"\n\nDescription: ${actionDescription.substring(0, 100)}...`);
+    
+    // Marquer l'email comme traité
+    handleMarkAsProcessed(email.id);
+  };
+
+  const handleSendEmail = (emailData: any) => {
+    const newEmail: Email = {
+      id: Date.now().toString(),
+      expediteur: 'manager@monequipe.com',
+      destinataire: emailData.destinataire,
+      sujet: emailData.sujet,
+      contenu: emailData.contenu,
+      dateReception: new Date().toISOString(),
+      traite: true
+    };
+    
+    setEmails([newEmail, ...emails]);
+    alert('Email envoyé avec succès !');
+  };
+
+  const handleReplyEmail = (originalEmail: Email, replyData: any) => {
+    const replyEmail: Email = {
+      id: Date.now().toString(),
+      expediteur: 'manager@monequipe.com',
+      destinataire: originalEmail.expediteur,
+      sujet: `Re: ${originalEmail.sujet}`,
+      contenu: replyData.contenu,
+      dateReception: new Date().toISOString(),
+      traite: true
+    };
+    
+    setEmails([replyEmail, ...emails]);
+    alert('Réponse envoyée avec succès !');
   };
 
   const getEmailIcon = (traite: boolean) => {
@@ -232,7 +270,10 @@ const TraitementMailing: React.FC = () => {
                     <span>Action</span>
                   </button>
                   <button
-                    onClick={() => setSelectedEmail(email)}
+                    onClick={() => {
+                      setSelectedEmail(email);
+                      setShowReplyModal(true);
+                    }}
                     className="px-3 py-1 bg-gray-600 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors flex items-center space-x-1"
                   >
                     <Reply size={14} />
@@ -254,6 +295,25 @@ const TraitementMailing: React.FC = () => {
           </p>
         </div>
       )}
+
+      {/* Modals */}
+      <EmailModal
+        isOpen={showComposeModal}
+        onClose={() => setShowComposeModal(false)}
+        onSend={handleSendEmail}
+        type="compose"
+      />
+      
+      <EmailModal
+        isOpen={showReplyModal}
+        onClose={() => {
+          setShowReplyModal(false);
+          setSelectedEmail(null);
+        }}
+        onSend={(data) => selectedEmail && handleReplyEmail(selectedEmail, data)}
+        type="reply"
+        originalEmail={selectedEmail}
+      />
     </div>
   );
 };
