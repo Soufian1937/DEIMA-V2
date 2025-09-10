@@ -7,7 +7,8 @@ import {
   CheckCircle, 
   Clock,
   Send,
-  Reply
+  Reply,
+  Trash2
 } from 'lucide-react';
 import { Email } from '../types';
 import ConfigurationSection from './ConfigurationSection';
@@ -72,11 +73,37 @@ const TraitementMailing: React.FC = () => {
     const actionTitle = `Action: ${email.sujet}`;
     const actionDescription = `Action créée depuis l'email de ${email.expediteur}:\n\n${email.contenu}`;
     
-    // Simuler la création d'une action
-    alert(`Action créée: "${actionTitle}"\n\nDescription: ${actionDescription.substring(0, 100)}...`);
+    // Créer une nouvelle action sans écraser les existantes
+    const newAction = {
+      id: `email-${Date.now()}`,
+      titre: actionTitle,
+      description: actionDescription,
+      responsable: 'À assigner',
+      statut: 'À faire' as const,
+      priorite: 'Moyenne' as const,
+      dateCreation: new Date().toISOString().split('T')[0],
+      dateEcheance: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // +7 jours
+      origine: `Email de ${email.expediteur}`,
+      observations: `Créée automatiquement depuis l'email reçu le ${new Date(email.dateReception).toLocaleDateString('fr-FR')}`,
+      progression: 0
+    };
+    
+    // Sauvegarder dans localStorage pour persistance
+    const existingActions = JSON.parse(localStorage.getItem('actions') || '[]');
+    const updatedActions = [...existingActions, newAction];
+    localStorage.setItem('actions', JSON.stringify(updatedActions));
+    
+    alert(`Action créée avec succès: "${actionTitle}"\n\nL'action a été ajoutée à la liste des actions globales.`);
     
     // Marquer l'email comme traité
     handleMarkAsProcessed(email.id);
+  };
+
+  const handleDeleteEmail = (id: string) => {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cet email ?')) {
+      setEmails(emails.filter(email => email.id !== id));
+      alert('Email supprimé avec succès !');
+    }
   };
 
   const handleSendEmail = (emailData: any) => {
@@ -278,6 +305,13 @@ const TraitementMailing: React.FC = () => {
                   >
                     <Reply size={14} />
                     <span>Répondre</span>
+                  </button>
+                  <button
+                    onClick={() => handleDeleteEmail(email.id)}
+                    className="px-3 py-1 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-1"
+                  >
+                    <Trash2 size={14} />
+                    <span>Supprimer</span>
                   </button>
                 </div>
               </div>

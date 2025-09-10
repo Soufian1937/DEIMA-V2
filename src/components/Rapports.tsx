@@ -509,7 +509,7 @@ const Rapports: React.FC = () => {
         
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Évolution Mensuelle</h3>
-          <div className="space-y-4">
+          <div className="space-y-4 mb-6">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Janvier</span>
               <div className="flex items-center space-x-2">
@@ -537,6 +537,26 @@ const Rapports: React.FC = () => {
                 <span className="text-sm font-medium">67%</span>
               </div>
             </div>
+          </div>
+          
+          {/* Graphique linéaire simulé */}
+          <div className="relative h-32 bg-gray-50 rounded-lg p-4">
+            <svg viewBox="0 0 300 80" className="w-full h-full">
+              <polyline
+                fill="none"
+                stroke="#3B82F6"
+                strokeWidth="2"
+                points="20,60 100,50 180,40 260,30"
+              />
+              <circle cx="20" cy="60" r="3" fill="#3B82F6" />
+              <circle cx="100" cy="50" r="3" fill="#3B82F6" />
+              <circle cx="180" cy="40" r="3" fill="#3B82F6" />
+              <circle cx="260" cy="30" r="3" fill="#3B82F6" />
+            </svg>
+            <div className="absolute bottom-1 left-4 text-xs text-gray-500">Nov</div>
+            <div className="absolute bottom-1 left-1/3 text-xs text-gray-500">Déc</div>
+            <div className="absolute bottom-1 left-2/3 text-xs text-gray-500">Jan</div>
+            <div className="absolute bottom-1 right-4 text-xs text-gray-500">Fév</div>
           </div>
         </div>
       </div>

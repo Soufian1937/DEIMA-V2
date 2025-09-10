@@ -121,6 +121,15 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
           <div className="p-6">
             {children}
           </div>
+          
+          {/* Footer avec signature */}
+          <footer className="mt-12 py-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="text-center">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Développé par <span className="font-semibold text-blue-600 dark:text-blue-400">Soufian RAMZI</span>
+              </p>
+            </div>
+          </footer>
         </main>
       </div>
     </div>

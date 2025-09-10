@@ -16,7 +16,13 @@ import ActionModal from './ActionModal';
 import ExportButtons from './ExportButtons';
 
 const ActionsGlobales: React.FC = () => {
-  const [actions, setActions] = useState<Action[]>([
+  // Charger les actions depuis localStorage au démarrage
+  const [actions, setActions] = useState<Action[]>(() => {
+    const savedActions = localStorage.getItem('actions');
+    if (savedActions) {
+      return JSON.parse(savedActions);
+    }
+    return [
     {
       id: '1',
       titre: 'Mise à jour documentation technique',
@@ -56,7 +62,13 @@ const ActionsGlobales: React.FC = () => {
       observations: 'Implémentation réussie, gains mesurés',
       progression: 100
     }
-  ]);
+    ];
+  });
+
+  // Sauvegarder les actions dans localStorage à chaque modification
+  React.useEffect(() => {
+    localStorage.setItem('actions', JSON.stringify(actions));
+  }, [actions]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatut, setFilterStatut] = useState('');

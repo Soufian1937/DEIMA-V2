@@ -225,11 +225,19 @@ const GestionEquipe: React.FC = () => {
             <div key={membre.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span className="text-blue-600 font-semibold text-lg">
-                      {membre.prenom[0]}{membre.nom[0]}
-                    </span>
-                  </div>
+                  {membre.photo ? (
+                    <img
+                      src={membre.photo}
+                      alt={`${membre.prenom} ${membre.nom}`}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-blue-200"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span className="text-blue-600 font-semibold text-lg">
+                        {membre.prenom[0]}{membre.nom[0]}
+                      </span>
+                    </div>
+                  )}
                   <div>
                     <h3 className="font-semibold text-gray-900">
                       {membre.prenom} {membre.nom}

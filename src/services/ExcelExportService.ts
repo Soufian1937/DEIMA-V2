@@ -186,6 +186,11 @@ export class ExcelExportService {
     const ws = XLSX.utils.json_to_sheet(data);
     XLSX.utils.book_append_sheet(workbook, ws, 'Emails');
     
+    // Ajouter signature
+    const signatureData = [{ Info: 'Développé par Soufian RAMZI', Date: new Date().toLocaleDateString('fr-FR') }];
+    const wsSignature = XLSX.utils.json_to_sheet(signatureData);
+    XLSX.utils.book_append_sheet(workbook, wsSignature, 'Info');
+    
     const fileName = `Emails_${new Date().toISOString().split('T')[0]}.xlsx`;
     XLSX.writeFile(workbook, fileName);
   }

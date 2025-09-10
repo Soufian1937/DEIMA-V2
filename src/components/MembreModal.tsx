@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Upload, User } from 'lucide-react';
 import { MembreEquipe } from '../types';
 
 interface MembreModalProps {
@@ -16,6 +16,7 @@ const MembreModal: React.FC<MembreModalProps> = ({ isOpen, onClose, onSave, memb
     prenom: '',
     email: '',
     poste: '',
+    photo: '',
     actionsAssignees: 0,
     actionsTerminees: 0
   });
@@ -28,6 +29,7 @@ const MembreModal: React.FC<MembreModalProps> = ({ isOpen, onClose, onSave, memb
         prenom: membre.prenom,
         email: membre.email,
         poste: membre.poste,
+        photo: membre.photo || '',
         actionsAssignees: membre.actionsAssignees,
         actionsTerminees: membre.actionsTerminees
       });
@@ -37,11 +39,23 @@ const MembreModal: React.FC<MembreModalProps> = ({ isOpen, onClose, onSave, memb
         prenom: '',
         email: '',
         poste: '',
+        photo: '',
         actionsAssignees: 0,
         actionsTerminees: 0
       });
     }
   }, [mode, membre, isOpen]);
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setFormData({ ...formData, photo: e.target?.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,6 +93,38 @@ const MembreModal: React.FC<MembreModalProps> = ({ isOpen, onClose, onSave, memb
               />
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Photo de profil</label>
+              <div className="flex items-center space-x-4">
+                {formData.photo ? (
+                  <img
+                    src={formData.photo}
+                    alt="Photo de profil"
+                    className="w-16 h-16 rounded-full object-cover border-2 border-gray-300"
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
+                    <User className="w-8 h-8 text-gray-400" />
+                  </div>
+                )}
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    className="hidden"
+                    id="photo-upload"
+                  />
+                  <label
+                    htmlFor="photo-upload"
+                    className="cursor-pointer inline-flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                  >
+                    <Upload size={16} />
+                    <span>Choisir une photo</span>
+                  </label>
+                </div>
+              </div>
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nom *</label>
               <input

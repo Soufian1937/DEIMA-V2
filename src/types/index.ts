@@ -41,6 +41,7 @@ export interface MembreEquipe {
   prenom: string;
   email: string;
   poste: string;
+  photo?: string;
   actionsAssignees: number;
   actionsTerminees: number;
 }
