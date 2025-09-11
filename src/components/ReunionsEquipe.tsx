@@ -16,41 +16,53 @@ import ConfigurationSection from './ConfigurationSection';
 import SujetReunionModal from './SujetReunionModal';
 
 const ReunionsEquipe: React.FC = () => {
-  const [sujets, setSujets] = useState<SujetReunion[]>([
-    {
-      id: '1',
-      titre: 'Sprint Review - Semaine 2',
-      description: 'Revue des tâches accomplies et planification de la semaine suivante',
-      statut: 'En cours',
-      responsable: 'Marie Dubois',
-      dateReunion: '2024-01-15T09:00:00',
-      typeReunion: 'Équipe',
-      actions: ['1', '2'],
-      notes: 'Blocage identifié sur l\'intégration API'
-    },
-    {
-      id: '2',
-      titre: 'Formation sécurité',
-      description: 'Point sur l\'avancement de la formation sécurité de l\'équipe',
-      statut: 'Ouvert',
-      responsable: 'Jean Martin',
-      dateReunion: '2024-01-16T14:00:00',
-      typeReunion: 'Équipe',
-      actions: ['2'],
-      notes: 'Planifier les sessions individuelles'
-    },
-    {
-      id: '3',
-      titre: 'Rétrospective mensuelle',
-      description: 'Bilan du mois écoulé et axes d\'amélioration',
-      statut: 'Fermé',
-      responsable: 'Sophie Laurent',
-      dateReunion: '2024-01-12T16:00:00',
-      typeReunion: 'Équipe',
-      actions: ['3'],
-      notes: 'Actions d\'amélioration définies et assignées'
+  // Charger les sujets depuis localStorage au démarrage
+  const [sujets, setSujets] = useState<SujetReunion[]>(() => {
+    const savedSujets = localStorage.getItem('reunionsEquipe');
+    if (savedSujets) {
+      return JSON.parse(savedSujets);
     }
-  ]);
+    return [
+      {
+        id: '1',
+        titre: 'Sprint Review - Semaine 2',
+        description: 'Revue des tâches accomplies et planification de la semaine suivante',
+        statut: 'En cours',
+        responsable: 'Marie Dubois',
+        dateReunion: '2024-01-15T09:00:00',
+        typeReunion: 'Équipe',
+        actions: ['1', '2'],
+        notes: 'Blocage identifié sur l\'intégration API'
+      },
+      {
+        id: '2',
+        titre: 'Formation sécurité',
+        description: 'Point sur l\'avancement de la formation sécurité de l\'équipe',
+        statut: 'Ouvert',
+        responsable: 'Jean Martin',
+        dateReunion: '2024-01-16T14:00:00',
+        typeReunion: 'Équipe',
+        actions: ['2'],
+        notes: 'Planifier les sessions individuelles'
+      },
+      {
+        id: '3',
+        titre: 'Rétrospective mensuelle',
+        description: 'Bilan du mois écoulé et axes d\'amélioration',
+        statut: 'Fermé',
+        responsable: 'Sophie Laurent',
+        dateReunion: '2024-01-12T16:00:00',
+        typeReunion: 'Équipe',
+        actions: ['3'],
+        notes: 'Actions d\'amélioration définies et assignées'
+      }
+    ];
+  });
+
+  // Sauvegarder les sujets dans localStorage à chaque modification
+  React.useEffect(() => {
+    localStorage.setItem('reunionsEquipe', JSON.stringify(sujets));
+  }, [sujets]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatut, setFilterStatut] = useState('');

@@ -15,44 +15,56 @@ import MembreModal from './MembreModal';
 import ExportButtons from './ExportButtons';
 
 const GestionEquipe: React.FC = () => {
-  const [membres, setMembres] = useState<MembreEquipe[]>([
-    {
-      id: '1',
-      nom: 'Dubois',
-      prenom: 'Marie',
-      email: 'marie.dubois@entreprise.com',
-      poste: 'Développeuse Senior',
-      actionsAssignees: 5,
-      actionsTerminees: 4
-    },
-    {
-      id: '2',
-      nom: 'Martin',
-      prenom: 'Jean',
-      email: 'jean.martin@entreprise.com',
-      poste: 'Chef de Projet',
-      actionsAssignees: 3,
-      actionsTerminees: 2
-    },
-    {
-      id: '3',
-      nom: 'Laurent',
-      prenom: 'Sophie',
-      email: 'sophie.laurent@entreprise.com',
-      poste: 'Analyste Qualité',
-      actionsAssignees: 4,
-      actionsTerminees: 4
-    },
-    {
-      id: '4',
-      nom: 'Durand',
-      prenom: 'Pierre',
-      email: 'pierre.durand@entreprise.com',
-      poste: 'Développeur',
-      actionsAssignees: 2,
-      actionsTerminees: 1
+  // Charger les membres depuis localStorage au démarrage
+  const [membres, setMembres] = useState<MembreEquipe[]>(() => {
+    const savedMembres = localStorage.getItem('membres');
+    if (savedMembres) {
+      return JSON.parse(savedMembres);
     }
-  ]);
+    return [
+      {
+        id: '1',
+        nom: 'Dubois',
+        prenom: 'Marie',
+        email: 'marie.dubois@entreprise.com',
+        poste: 'Développeuse Senior',
+        actionsAssignees: 5,
+        actionsTerminees: 4
+      },
+      {
+        id: '2',
+        nom: 'Martin',
+        prenom: 'Jean',
+        email: 'jean.martin@entreprise.com',
+        poste: 'Chef de Projet',
+        actionsAssignees: 3,
+        actionsTerminees: 2
+      },
+      {
+        id: '3',
+        nom: 'Laurent',
+        prenom: 'Sophie',
+        email: 'sophie.laurent@entreprise.com',
+        poste: 'Analyste Qualité',
+        actionsAssignees: 4,
+        actionsTerminees: 4
+      },
+      {
+        id: '4',
+        nom: 'Durand',
+        prenom: 'Pierre',
+        email: 'pierre.durand@entreprise.com',
+        poste: 'Développeur',
+        actionsAssignees: 2,
+        actionsTerminees: 1
+      }
+    ];
+  });
+
+  // Sauvegarder les membres dans localStorage à chaque modification
+  React.useEffect(() => {
+    localStorage.setItem('membres', JSON.stringify(membres));
+  }, [membres]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -78,6 +90,7 @@ const GestionEquipe: React.FC = () => {
   const handleDeleteMembre = (id: string) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce membre ?')) {
       setMembres(membres.filter(membre => membre.id !== id));
+      alert('Membre supprimé avec succès !');
     }
   };
 

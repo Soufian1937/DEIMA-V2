@@ -19,56 +19,68 @@ import ObjectifModal from './ObjectifModal';
 import ExportButtons from './ExportButtons';
 
 const ObjectifsIndividuels: React.FC = () => {
-  const [objectifs, setObjectifs] = useState<ObjectifIndividuel[]>([
-    {
-      id: '1',
-      titre: 'Certification AWS Solutions Architect',
-      description: 'Obtenir la certification AWS Solutions Architect Associate pour renforcer les compétences cloud',
-      membreId: '1',
-      membreNom: 'Marie Dubois',
-      dateCreation: '2024-01-01',
-      dateEcheance: '2024-06-30',
-      statut: 'En cours',
-      priorite: 'Haute',
-      progression: 45,
-      type: 'Développement',
-      trimestre: 'Q2',
-      notes: 'Formation en ligne commencée, examen prévu en juin',
-      jalons: ['Formation théorique', 'Labs pratiques', 'Examen blanc', 'Certification finale']
-    },
-    {
-      id: '2',
-      titre: 'Leadership d\'équipe projet X',
-      description: 'Prendre la responsabilité du leadership sur le projet X et développer les compétences managériales',
-      membreId: '2',
-      membreNom: 'Jean Martin',
-      dateCreation: '2024-01-01',
-      dateEcheance: '2024-12-31',
-      statut: 'En cours',
-      priorite: 'Haute',
-      progression: 30,
-      type: 'Stratégique',
-      trimestre: 'Q4',
-      notes: 'Projet assigné, formation management prévue Q2',
-      jalons: ['Formation management', 'Prise de responsabilité', 'Évaluation mi-parcours', 'Bilan final']
-    },
-    {
-      id: '3',
-      titre: 'Optimisation processus qualité',
-      description: 'Améliorer les processus qualité de 20% et réduire les défauts',
-      membreId: '3',
-      membreNom: 'Sophie Laurent',
-      dateCreation: '2024-01-01',
-      dateEcheance: '2024-09-30',
-      statut: 'Non commencé',
-      priorite: 'Moyenne',
-      progression: 0,
-      type: 'Opérationnel',
-      trimestre: 'Q3',
-      notes: 'Analyse préliminaire à effectuer',
-      jalons: ['Analyse actuelle', 'Plan d\'amélioration', 'Mise en œuvre', 'Mesure résultats']
+  // Charger les objectifs depuis localStorage au démarrage
+  const [objectifs, setObjectifs] = useState<ObjectifIndividuel[]>(() => {
+    const savedObjectifs = localStorage.getItem('objectifs');
+    if (savedObjectifs) {
+      return JSON.parse(savedObjectifs);
     }
-  ]);
+    return [
+      {
+        id: '1',
+        titre: 'Certification AWS Solutions Architect',
+        description: 'Obtenir la certification AWS Solutions Architect Associate pour renforcer les compétences cloud',
+        membreId: '1',
+        membreNom: 'Marie Dubois',
+        dateCreation: '2024-01-01',
+        dateEcheance: '2024-06-30',
+        statut: 'En cours',
+        priorite: 'Haute',
+        progression: 45,
+        type: 'Développement',
+        trimestre: 'Q2',
+        notes: 'Formation en ligne commencée, examen prévu en juin',
+        jalons: ['Formation théorique', 'Labs pratiques', 'Examen blanc', 'Certification finale']
+      },
+      {
+        id: '2',
+        titre: 'Leadership d\'équipe projet X',
+        description: 'Prendre la responsabilité du leadership sur le projet X et développer les compétences managériales',
+        membreId: '2',
+        membreNom: 'Jean Martin',
+        dateCreation: '2024-01-01',
+        dateEcheance: '2024-12-31',
+        statut: 'En cours',
+        priorite: 'Haute',
+        progression: 30,
+        type: 'Stratégique',
+        trimestre: 'Q4',
+        notes: 'Projet assigné, formation management prévue Q2',
+        jalons: ['Formation management', 'Prise de responsabilité', 'Évaluation mi-parcours', 'Bilan final']
+      },
+      {
+        id: '3',
+        titre: 'Optimisation processus qualité',
+        description: 'Améliorer les processus qualité de 20% et réduire les défauts',
+        membreId: '3',
+        membreNom: 'Sophie Laurent',
+        dateCreation: '2024-01-01',
+        dateEcheance: '2024-09-30',
+        statut: 'Non commencé',
+        priorite: 'Moyenne',
+        progression: 0,
+        type: 'Opérationnel',
+        trimestre: 'Q3',
+        notes: 'Analyse préliminaire à effectuer',
+        jalons: ['Analyse actuelle', 'Plan d\'amélioration', 'Mise en œuvre', 'Mesure résultats']
+      }
+    ];
+  });
+
+  // Sauvegarder les objectifs dans localStorage à chaque modification
+  React.useEffect(() => {
+    localStorage.setItem('objectifs', JSON.stringify(objectifs));
+  }, [objectifs]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatut, setFilterStatut] = useState('');

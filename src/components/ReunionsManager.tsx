@@ -16,41 +16,53 @@ import ConfigurationSection from './ConfigurationSection';
 import SujetReunionModal from './SujetReunionModal';
 
 const ReunionsManager: React.FC = () => {
-  const [sujets, setSujets] = useState<SujetReunion[]>([
-    {
-      id: '1',
-      titre: 'Budget Q1 2024',
-      description: 'Révision et validation du budget pour le premier trimestre',
-      statut: 'En cours',
-      responsable: 'Manager',
-      dateReunion: '2024-01-15T14:00:00',
-      typeReunion: 'Manager',
-      actions: ['1', '3'],
-      notes: 'Attente validation direction financière'
-    },
-    {
-      id: '2',
-      titre: 'Stratégie produit 2024',
-      description: 'Définition de la roadmap produit pour l\'année',
-      statut: 'Ouvert',
-      responsable: 'Manager',
-      dateReunion: '2024-01-20T10:00:00',
-      typeReunion: 'Manager',
-      actions: ['2'],
-      notes: 'Préparation présentation pour le comité de direction'
-    },
-    {
-      id: '3',
-      titre: 'Performance équipe',
-      description: 'Évaluation des performances et objectifs individuels',
-      statut: 'Fermé',
-      responsable: 'Manager',
-      dateReunion: '2024-01-10T16:00:00',
-      typeReunion: 'Manager',
-      actions: [],
-      notes: 'Entretiens individuels planifiés pour février'
+  // Charger les sujets depuis localStorage au démarrage
+  const [sujets, setSujets] = useState<SujetReunion[]>(() => {
+    const savedSujets = localStorage.getItem('reunionsManager');
+    if (savedSujets) {
+      return JSON.parse(savedSujets);
     }
-  ]);
+    return [
+      {
+        id: '1',
+        titre: 'Budget Q1 2024',
+        description: 'Révision et validation du budget pour le premier trimestre',
+        statut: 'En cours',
+        responsable: 'Manager',
+        dateReunion: '2024-01-15T14:00:00',
+        typeReunion: 'Manager',
+        actions: ['1', '3'],
+        notes: 'Attente validation direction financière'
+      },
+      {
+        id: '2',
+        titre: 'Stratégie produit 2024',
+        description: 'Définition de la roadmap produit pour l\'année',
+        statut: 'Ouvert',
+        responsable: 'Manager',
+        dateReunion: '2024-01-20T10:00:00',
+        typeReunion: 'Manager',
+        actions: ['2'],
+        notes: 'Préparation présentation pour le comité de direction'
+      },
+      {
+        id: '3',
+        titre: 'Performance équipe',
+        description: 'Évaluation des performances et objectifs individuels',
+        statut: 'Fermé',
+        responsable: 'Manager',
+        dateReunion: '2024-01-10T16:00:00',
+        typeReunion: 'Manager',
+        actions: [],
+        notes: 'Entretiens individuels planifiés pour février'
+      }
+    ];
+  });
+
+  // Sauvegarder les sujets dans localStorage à chaque modification
+  React.useEffect(() => {
+    localStorage.setItem('reunionsManager', JSON.stringify(sujets));
+  }, [sujets]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatut, setFilterStatut] = useState('');

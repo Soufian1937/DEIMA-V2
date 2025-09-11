@@ -17,29 +17,65 @@ import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 
 const Rapports: React.FC = () => {
+  // Charger les données depuis localStorage
+  const [actions] = useState(() => {
+    const savedActions = localStorage.getItem('actions');
+    return savedActions ? JSON.parse(savedActions) : [];
+  });
+
+  const [membres] = useState(() => {
+    const savedMembres = localStorage.getItem('membres');
+    return savedMembres ? JSON.parse(savedMembres) : [];
+  });
+
+  const [emails] = useState(() => {
+    const savedEmails = localStorage.getItem('emails');
+    return savedEmails ? JSON.parse(savedEmails) : [];
+  });
+
+  const [reunionsManager] = useState(() => {
+    const savedReunionsManager = localStorage.getItem('reunionsManager');
+    return savedReunionsManager ? JSON.parse(savedReunionsManager) : [];
+  });
+
+  const [reunionsEquipe] = useState(() => {
+    const savedReunionsEquipe = localStorage.getItem('reunionsEquipe');
+    return savedReunionsEquipe ? JSON.parse(savedReunionsEquipe) : [];
+  });
+
   const [selectedPeriod, setSelectedPeriod] = useState('month');
   const [selectedType, setSelectedType] = useState('actions');
 
   // Données d'exemple pour les rapports
+  // Calculer les données réelles depuis localStorage
   const rapportData = {
     actions: {
-      total: 24,
-      terminees: 18,
-      enCours: 3,
-      enRetard: 3,
-      nouvelles: 5
+      total: actions.length,
+      terminees: actions.filter((a: any) => a.statut === 'Terminé').length,
+      enCours: actions.filter((a: any) => a.statut === 'En cours').length,
+      enRetard: actions.filter((a: any) => a.statut === 'En retard').length,
+      nouvelles: actions.filter((a: any) => {
+        const dateCreation = new Date(a.dateCreation);
+        const uneSemaineAgo = new Date();
+        uneSemaineAgo.setDate(uneSemaineAgo.getDate() - 7);
+        return dateCreation >= uneSemaineAgo;
+      }).length
     },
     equipe: {
-      membres: 8,
-      actionsParMembre: 3,
-      tauxCompletion: 75,
-      performance: 85
+      membres: membres.length,
+      actionsParMembre: membres.length > 0 ? Math.round(actions.length / membres.length) : 0,
+      tauxCompletion: membres.length > 0 ? Math.round(
+        membres.reduce((acc: number, m: any) => acc + (m.actionsTerminees / (m.actionsAssignees || 1) * 100), 0) / membres.length
+      ) : 0,
+      performance: membres.length > 0 ? Math.round(
+        membres.reduce((acc: number, m: any) => acc + (m.actionsTerminees / (m.actionsAssignees || 1) * 100), 0) / membres.length
+      ) : 0
     },
     reunions: {
-      totalSujets: 12,
-      sujetsOuverts: 4,
-      sujetsEnCours: 3,
-      sujetsFermes: 5
+      totalSujets: reunionsManager.length + reunionsEquipe.length,
+      sujetsOuverts: [...reunionsManager, ...reunionsEquipe].filter((r: any) => r.statut === 'Ouvert').length,
+      sujetsEnCours: [...reunionsManager, ...reunionsEquipe].filter((r: any) => r.statut === 'En cours').length,
+      sujetsFermes: [...reunionsManager, ...reunionsEquipe].filter((r: any) => r.statut === 'Fermé').length
     }
   };
 
@@ -66,9 +102,9 @@ const Rapports: React.FC = () => {
   // };
 
   const chartData = [
-    { name: 'Terminées', value: 18, color: '#10B981' },
-    { name: 'En cours', value: 3, color: '#3B82F6' },
-    { name: 'En retard', value: 3, color: '#EF4444' }
+    { name: 'Terminées', value: rapportData.actions.terminees, color: '#10B981' },
+    { name: 'En cours', value: rapportData.actions.enCours, color: '#3B82F6' },
+    { name: 'En retard', value: rapportData.actions.enRetard, color: '#EF4444' }
   ];
 
   const handleExportPDF = () => {

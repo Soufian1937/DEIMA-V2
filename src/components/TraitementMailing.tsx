@@ -16,37 +16,49 @@ import ExportButtons from './ExportButtons';
 import EmailModal from './EmailModal';
 
 const TraitementMailing: React.FC = () => {
-  const [emails, setEmails] = useState<Email[]>([
-    {
-      id: '1',
-      expediteur: 'client@entreprise.com',
-      destinataire: 'manager@monequipe.com',
-      sujet: 'Problème de livraison urgent',
-      contenu: 'Bonjour, nous avons un problème urgent avec la livraison du projet X. Pouvez-vous nous aider ?',
-      dateReception: '2024-01-12T10:30:00',
-      actionAssociee: '1',
-      traite: false
-    },
-    {
-      id: '2',
-      expediteur: 'fournisseur@partenaire.com',
-      destinataire: 'manager@monequipe.com',
-      sujet: 'Mise à jour des spécifications',
-      contenu: 'Les nouvelles spécifications sont disponibles. Merci de les valider avant vendredi.',
-      dateReception: '2024-01-12T14:15:00',
-      actionAssociee: '2',
-      traite: true
-    },
-    {
-      id: '3',
-      expediteur: 'direction@entreprise.com',
-      destinataire: 'manager@monequipe.com',
-      sujet: 'Réunion stratégique mensuelle',
-      contenu: 'Rappel pour la réunion stratégique de demain à 14h. Merci de préparer le rapport d\'avancement.',
-      dateReception: '2024-01-11T16:45:00',
-      traite: false
+  // Charger les emails depuis localStorage au démarrage
+  const [emails, setEmails] = useState<Email[]>(() => {
+    const savedEmails = localStorage.getItem('emails');
+    if (savedEmails) {
+      return JSON.parse(savedEmails);
     }
-  ]);
+    return [
+      {
+        id: '1',
+        expediteur: 'client@entreprise.com',
+        destinataire: 'manager@monequipe.com',
+        sujet: 'Problème de livraison urgent',
+        contenu: 'Bonjour, nous avons un problème urgent avec la livraison du projet X. Pouvez-vous nous aider ?',
+        dateReception: '2024-01-12T10:30:00',
+        actionAssociee: '1',
+        traite: false
+      },
+      {
+        id: '2',
+        expediteur: 'fournisseur@partenaire.com',
+        destinataire: 'manager@monequipe.com',
+        sujet: 'Mise à jour des spécifications',
+        contenu: 'Les nouvelles spécifications sont disponibles. Merci de les valider avant vendredi.',
+        dateReception: '2024-01-12T14:15:00',
+        actionAssociee: '2',
+        traite: true
+      },
+      {
+        id: '3',
+        expediteur: 'direction@entreprise.com',
+        destinataire: 'manager@monequipe.com',
+        sujet: 'Réunion stratégique mensuelle',
+        contenu: 'Rappel pour la réunion stratégique de demain à 14h. Merci de préparer le rapport d\'avancement.',
+        dateReception: '2024-01-11T16:45:00',
+        traite: false
+      }
+    ];
+  });
+
+  // Sauvegarder les emails dans localStorage à chaque modification
+  React.useEffect(() => {
+    localStorage.setItem('emails', JSON.stringify(emails));
+  }, [emails]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterTraite, setFilterTraite] = useState('');
